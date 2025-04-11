@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulario Cliente</title>
+</head>
+<body>
+  <h1>Formulario para {{ group_name }}</h1>
+  <form id="clientForm" method="POST" action="/submit">
+    <input type="hidden" id="groupId" name="groupId" value="{{ group_id }}">
+    <input type="text" name="givenNames" placeholder="Given Names" required>
+    <input type="text" name="lastName" placeholder="Last Name" required>
+    <input type="date" name="dob" required>
+    <input type="text" name="passport" placeholder="Passport Number" required>
+    <input type="text" name="address1" placeholder="Address Line 1" required>
+    <input type="text" name="address2" placeholder="Address Line 2">
+    <input type="text" name="postalCode" placeholder="Postal Code" required>
+    <input type="text" name="state" placeholder="State" required>
+    <input type="text" name="locality" placeholder="Locality" required>
+    <input type="text" name="country" placeholder="Country" required>
+    <label>
+      <input type="checkbox" name="terms" required> Acepto los términos y condiciones
+    </label>
+    <label>Firma:</label>
+    <canvas id="signaturePad" width="300" height="150" style="border:1px solid #000;"></canvas>
+    <button type="submit">Enviar</button>
+  </form>
+  <script>
+    const canvas = document.getElementById('signaturePad');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+    canvas.addEventListener('mousedown', () => { drawing = true; });
+    canvas.addEventListener('mouseup', () => { drawing = false; ctx.beginPath(); });
+    canvas.addEventListener('mousemove', e => {
+      if (!drawing) return;
+      ctx.lineWidth = 2;
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = '#000';
+      ctx.lineTo(e.offsetX, e.offsetY);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(e.offsetX, e.offsetY);
+    });
+    document.getElementById('clientForm').addEventListener('submit', function(e) {
+      const signatureData = canvas.toDataURL();
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'signature';
+      input.value = signatureData;
+      this.appendChild(input);
+    });
+  </script>
+</body>
+</html>

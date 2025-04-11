@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Administración de Grupos</title>
+  <link rel="icon" type="image/png" href="/static/imagenes/Hotel-Spa-AQDA-logo-negro-01.png">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+    }
+
+    .nav-bar {
+        background-color: #007BFF;
+        padding: 10px;
+        display: flex;
+        gap: 15px;
+    }
+
+    .nav-bar a {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .nav-bar a:hover {
+        text-decoration: underline;
+    }
+
+    .nav-bar a.active {
+        text-decoration: underline;
+        background-color: #0056b3;
+        padding: 5px 10px;
+        border-radius: 4px;
+    }
+
+    .container {
+      width: 100%;
+      background: #fff;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .header-image {
+      max-width: 200px;
+      margin: 20px auto;
+      display: block;
+    }
+
+    h1 {
+      margin-top: 10px;
+    }
+
+    form {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 400px;
+    }
+
+    input {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1em;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      font-size: 0.9em;
+    }
+
+    th {
+      background-color: #007BFF;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    button {
+      margin: 2px 0;
+      padding: 5px 10px;
+      border: none;
+      background-color: #007BFF;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    a {
+      display: inline-block;
+      margin-top: 15px;
+      color: #007BFF;
+      text-decoration: none;
+    }
+
+    @media (max-width: 768px) {
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+      th, td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+      }
+      th::before, td::before {
+        position: absolute;
+        left: 10px;
+        white-space: nowrap;
+      }
+      th::before {
+        content: attr(data-label);
+        font-weight: bold;
+      }
+      td::before {
+        content: attr(data-label);
+      }
+    }
+  </style>
+</head>
+<body>
+
+    <nav class="nav-bar">
+        <a href="/admin/clients" class="{% if current_page == 'clients' %}active{% endif %}">Clientes</a>
+        <a href="/admin/groups" class="{% if current_page == 'groups' %}active{% endif %}">Grupos</a>
+        <a href="/admin/logout">Cerrar sesión</a>
+      </nav>
+
+  <div class="container">
+    <img src="{{ url_for('static', filename='imagenes/Hotel-Spa-AQDA-logo-negro-01.png') }}" alt="Header" class="header-image">
+
+    <h1>Gestión de Grupos</h1>
+
+    <form action="/admin/create_group" method="POST">
+      <input type="text" name="name" placeholder="Nombre del grupo" required>
+      <button type="submit">Crear</button>
+    </form>
+
+    <table>
+      <thead>
+        <tr><th>ID</th><th>Nombre</th><th>Token</th><th>Link</th><th>Acciones</th></tr>
+      </thead>
+      <tbody>
+        {% for group in groups %}
+        <tr>
+          <td>{{ group.id }}</td>
+          <td>{{ group.name }}</td>
+          <td>{{ group.token }}</td>
+          <td>
+            <input type="text" value="http://localhost:5000/formulario?token={{ group.token }}" readonly>
+          </td>
+          <td>
+            <form action="/admin/delete_group/{{ group.id }}" method="POST">
+              <button type="submit">Eliminar</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <a href="/admin/logout">Cerrar sesión</a>
+  </div>
+
+</body>
+</html>

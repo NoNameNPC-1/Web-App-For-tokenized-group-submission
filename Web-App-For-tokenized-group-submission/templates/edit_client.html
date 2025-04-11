@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Editar Cliente</title>
+  <link rel="icon" type="image/png" href="/static/imagenes/Hotel-Spa-AQDA-logo-negro-01.png">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+    }
+
+    .container {
+      width: 100%;
+      background: #fff;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .header-image {
+      max-width: 200px;
+      margin: 20px auto;
+      display: block;
+    }
+
+    h1 {
+      margin-top: 10px;
+    }
+
+    form {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    input, select {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1em;
+    }
+
+    button {
+      padding: 10px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 200px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    @media (max-width: 768px) {
+      input, select, button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <img src="{{ url_for('static', filename='imagenes/Hotel-Spa-AQDA-logo-negro-01.png') }}" alt="Header" class="header-image">
+
+    <h1>Editar Cliente</h1>
+  <form action="/admin/update_client/{{ client.id }}" method="POST">
+    <label>Full Name
+      <input type="text" name="fullName" value="{{ client.full_name }}" required>
+    </label>
+    <label>Contact
+      <input type="text" name="contact" value="{{ client.contact }}" required>
+    </label>
+    <label>Birth Date
+      <input type="date" name="birthDate" value="{{ client.birth_date }}" required>
+    </label>
+    <label>Address
+      <input type="text" name="address" value="{{ client.address }}" required>
+    </label>
+    <label>Zip Code
+      <input type="text" name="zipCode" value="{{ client.zip_code }}" required>
+    </label>
+    <label>Country
+      <input type="text" name="country" value="{{ client.country }}" required>
+    </label>
+    <label>Passport Number
+      <input type="text" name="passportNumber" value="{{ client.passport_number }}" required>
+    </label>
+    <label>Issuing Country
+      <input type="text" name="issuingCountry" value="{{ client.issuing_country }}" required>
+    </label>
+    <label>Date of Issue
+      <input type="date" name="dateOfIssue" value="{{ client.date_of_issue }}" required>
+    </label>
+    <label>Date of Expiration
+      <input type="date" name="dateOfExpiration" value="{{ client.date_of_expiration }}" required>
+    </label>
+    <label>
+      <input type="checkbox" name="terms" {% if client.terms_accepted %}checked{% endif %}> Terms Accepted
+    </label>
+    <label>Grupo:
+      <select name="group_id">
+        <option value="">Sin grupo</option>
+        {% for group in groups %}
+          <option value="{{ group.id }}" {% if client.group_id == group.id %}selected{% endif %}>{{ group.name }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <button type="submit">Guardar cambios</button>
+  </form>
+  <a href="/admin/clients">Volver a la lista</a>
+</body>
+</html>

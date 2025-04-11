@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Administración de Grupos</title>
+</head>
+<body>
+  <h1>Gestión de Grupos</h1>
+  <form action="/admin/create_group" method="POST">
+    <input type="text" name="name" placeholder="Nombre del grupo" required>
+    <button type="submit">Crear</button>
+  </form>
+  <table>
+    <tr><th>ID</th><th>Nombre</th><th>Token</th><th>Link</th><th>Acciones</th></tr>
+    {% for group in groups %}
+    <tr>
+      <td>{{ group.id }}</td>
+      <td>{{ group.name }}</td>
+      <td>{{ group.token }}</td>
+      <td>
+        <input type="text" value="http://localhost:5000/formulario?token={{ group.token }}" readonly>
+      </td>
+      <td>
+        <form action="/admin/delete_group/{{ group.id }}" method="POST">
+          <button type="submit">Eliminar</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  <a href="/admin/logout">Cerrar sesión</a>
+</body>
+</html>

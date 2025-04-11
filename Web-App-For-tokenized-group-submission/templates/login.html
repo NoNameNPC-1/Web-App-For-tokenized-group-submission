@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login Admin</title>
+  <link rel="icon" type="image/png" href="/static/imagenes/Hotel-Spa-AQDA-logo-negro-01.png">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 400px;
+      background: #fff;
+      padding: 20px;
+      box-sizing: border-box;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .header-image {
+      max-width: 200px;
+      margin: 20px auto;
+      display: block;
+    }
+
+    h2 {
+      margin-top: 10px;
+    }
+
+    form {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    input {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1em;
+    }
+
+    button {
+      padding: 10px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .error-message {
+        color: red;
+        margin-top: 10px;
+        display: none;
+    }
+
+    .error-message.visible {
+        display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <img src="{{ url_for('static', filename='imagenes/Hotel-Spa-AQDA-logo-negro-01.png') }}" alt="Header" class="header-image">
+
+    <h2>Iniciar sesión</h2>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="error-message visible">{{ messages[0] }}</div>
+        {% else %}
+            <div class="error-message hidden"></div>
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+      <input type="text" name="username" placeholder="Usuario" required>
+      <input type="password" name="password" placeholder="Contraseña" required>
+      <button type="submit">Entrar</button>
+    </form>
+  </div>
+
+</body>
+</html>

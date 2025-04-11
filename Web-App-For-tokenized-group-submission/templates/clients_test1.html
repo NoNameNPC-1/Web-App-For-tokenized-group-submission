@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Registros de Clientes</title>
+</head>
+<body>
+  <h1>Registros de Clientes</h1>
+  <form method="GET" action="/admin/clients">
+    <label>Filtrar por grupo:</label>
+    <select name="group_id" onchange="this.form.submit()">
+      <option value="">Todos</option>
+      {% for group in groups %}
+        <option value="{{ group.id }}" {% if selected_group and selected_group|int == group.id %}selected{% endif %}>
+          {{ group.name }}
+        </option>
+      {% endfor %}
+    </select>
+  </form>
+  <form method="GET" action="/admin/export">
+    {% if selected_group %}
+      <input type="hidden" name="group_id" value="{{ selected_group }}">
+    {% endif %}
+    <button type="submit">Exportar a Excel</button>
+  </form>
+  <table>
+    <tr>
+      <th>ID</th><th>Given Names</th><th>Last Name</th><th>DOB</th><th>Passport</th>
+      <th>Address</th><th>Postal</th><th>State</th><th>Locality</th><th>Country</th>
+      <th>Terms</th><th>Group</th><th>Acciones</th>
+    </tr>
+    {% for client in clients %}
+    <tr>
+      <td>{{ client.id }}</td><td>{{ client.given_names }}</td><td>{{ client.last_name }}</td>
+      <td>{{ client.date_of_birth }}</td><td>{{ client.passport_number }}</td>
+      <td>{{ client.address_line1 }} {{ client.address_line2 }}</td><td>{{ client.postal_code }}</td>
+      <td>{{ client.state }}</td><td>{{ client.locality }}</td><td>{{ client.country }}</td>
+      <td>{{ 'Yes' if client.terms_accepted else 'No' }}</td><td>{{ client.group_name or 'Sin grupo' }}</td>
+      <td>
+        <form action="/admin/delete_client/{{ client.id }}" method="POST">
+          <button type="submit">Eliminar</button>
+        </form>
+        <form action="/admin/edit_client/{{ client.id }}" method="GET">
+          <button type="submit">Editar</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  <a href="/admin/logout">Cerrar sesión</a>
+</body>
+</html>

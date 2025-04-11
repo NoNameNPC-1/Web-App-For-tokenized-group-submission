@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guest Information Form</title>
+  <link rel="icon" type="image/png" href="/static/imagenes/Hotel-Spa-AQDA-logo-negro-01.png">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: #f9f9f9;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 700px;
+      background: #fff;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .header-image {
+      max-width: 200px;
+      margin-bottom: 20px;
+    }
+
+    form {
+      text-align: left;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 4px;
+      box-sizing: border-box;
+    }
+
+    .signature-box {
+      border: 1px solid #ccc;
+      height: 150px;
+      margin-top: 10px;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .form-button {
+      flex: 1;
+      padding: 10px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .form-button:hover {
+      background-color: #0056b3;
+    }
+
+    .legal-text, .disclaimer {
+      font-size: 0.9em;
+      color: #555;
+      margin-top: 20px;
+    }
+
+    .terms-container {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .terms-container input {
+      width: auto;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <img src="{{ url_for('static', filename='imagenes/Hotel-Spa-AQDA-logo-negro-01.png') }}" alt="Header" class="header-image">
+
+    <form id="guestForm" method="POST" action="/submit">
+      <p class="legal-text">
+        Dear Guest,<br>
+        To comply with Spanish regulations (Royal Decree 933/2021), all accommodation providers are required to collect guest information and report it to authorities within 24 hours of check-in for security purposes.<br>
+        To make your check-in process smooth and efficient, please provide these details through this form. Thank you for your cooperation, and we look forward to welcoming you!
+      </p>
+
+      <label>Full Name
+        <input type="text" name="fullName" required>
+      </label>
+
+      <label>Email or Phone Number
+        <input type="text" name="contact" required>
+      </label>
+
+      <label>Birth Date
+        <input type="date" name="birthDate" required>
+      </label>
+
+      <label>Address
+        <input type="text" name="address" required>
+      </label>
+
+      <label>Zip Code
+        <input type="text" name="zipCode" required>
+      </label>
+
+      <label>Country
+        <input type="text" name="country" required>
+      </label>
+
+      <label>Passport Number
+        <input type="text" name="passportNumber" required>
+      </label>
+
+      <label>Issuing Country
+        <input type="text" name="issuingCountry" required>
+      </label>
+
+      <label>Date of Issue
+        <input type="date" name="dateOfIssue" required>
+      </label>
+
+      <label>Date of Expiration
+        <input type="date" name="dateOfExpiration" required>
+      </label>
+
+      <p class="disclaimer">
+        In accordance with the provisions of the General Regulation (EU) 2016/679 of Data Protection, and the Organic Law 3/2018, of December 5, of Protection of Personal Data and Guarantee of Digital Rights, we inform you that the data provided throughout the provision of the service will be incorporated into the Treatment Activity owned by Lorygar S.L. with CIF B 15.357.387 and registered office at Paseo de Amaia 23B, Urb. Brandía, Vidán, 15706, Santiago de Compostela (A Coruña). The purpose of this treatment is to provide an optimal service as customer. The data will not be disclosed to third parties. You can exercise the rights of access, rectification, deletion, limitation, opposition and portability at any time, in writing, accompanied by a copy of an official document that identifies you addressed to the above address or email administración@aquintadaauga.com.
+      </p>
+
+      <div class="terms-container">
+        <input type="checkbox" name="terms" required>
+        <span>I accept the terms and conditions.</span>
+      </div>
+
+      <label>Signature
+        <div class="signature-box" id="signatureBox"></div>
+      </label>
+
+      <input type="hidden" id="groupId" name="groupId" value="{{ group_id }}">
+        <div class="button-group">
+            <button type="button" class="form-button" id="clearSignature">Clear Signature</button>
+            <button type="submit" class="form-button">Submit</button>
+        </div>
+    </form>
+
+  <script>
+    const signatureBox = document.getElementById('signatureBox');
+    let isDrawing = false;
+    const canvas = document.createElement('canvas');
+    canvas.width = signatureBox.clientWidth;
+    canvas.height = signatureBox.clientHeight;
+    signatureBox.appendChild(canvas);
+    const ctx = canvas.getContext('2d');
+
+    canvas.addEventListener('mousedown', () => { isDrawing = true; });
+    canvas.addEventListener('mouseup', () => { isDrawing = false; ctx.beginPath(); });
+    canvas.addEventListener('mousemove', draw);
+
+    function draw(e) {
+      if (!isDrawing) return;
+      ctx.lineWidth = 2;
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = '#000';
+      ctx.lineTo(e.offsetX, e.offsetY);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(e.offsetX, e.offsetY);
+    }
+
+    const clearButton = document.getElementById('clearSignature');
+    clearButton.addEventListener('click', () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    });
+    document.getElementById('guestForm').addEventListener('submit', function(e) {
+        const signatureData = canvas.toDataURL();
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'signature';
+        input.value = signatureData;
+        this.appendChild(input);
+    });
+  </script>
+
+</body>
+</html>
